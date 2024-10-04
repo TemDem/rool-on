@@ -12482,6 +12482,7 @@
         const mainImage = document.querySelector(".main-image");
         const prevButton = document.querySelector(".prev-button");
         const nextButton = document.querySelector(".next-button");
+        const thumbnailsContainer = document.querySelector(".thumbnails");
         let currentImageIndex = 0;
         function changeMainImage(index) {
             thumbnails.forEach(((thumb, i) => {
@@ -12491,6 +12492,13 @@
                 } else thumb.classList.remove("active");
             }));
             currentImageIndex = index;
+            scrollToThumbnail(index);
+        }
+        function scrollToThumbnail(index) {
+            const thumbnail = thumbnails[index];
+            const thumbnailRect = thumbnail.getBoundingClientRect();
+            const containerRect = thumbnailsContainer.getBoundingClientRect();
+            if (thumbnailRect.top < containerRect.top || thumbnailRect.bottom > containerRect.bottom) thumbnailsContainer.scrollTop += thumbnailRect.top - containerRect.top;
         }
         thumbnails.forEach(((thumbnail, index) => {
             thumbnail.addEventListener("click", (() => {
@@ -12527,23 +12535,96 @@
                 document.documentElement.classList.remove("modal");
             }
         }));
+        document.addEventListener("beforPopupClose", (function(e) {
+            const currentPopup = e.detail.popup.targetOpen.element;
+            if (currentPopup.id == "onsize") if (document.querySelectorAll(".popup-size__forms").length > 1) currentPopup.classList.add("onsize-on");
+            document.documentElement.classList.remove("lock");
+        }));
+        document.addEventListener("afterPopupClose", (function(e) {
+            e.detail.popup.targetOpen.element;
+            document.documentElement.classList.remove("lock");
+        }));
+        const popupAddPc = document.querySelector(".calc__add a");
+        const popupAddMob = document.querySelector("a.popup-size__add");
+        function addNewBlock(containerSelector, blockSelector) {
+            const blockToCopy = document.querySelector(blockSelector);
+            const newBlock = blockToCopy.cloneNode(true);
+            const widthInput = newBlock.querySelector('input[id^="width"]');
+            const lengthInput = newBlock.querySelector('input[id^="length"]');
+            if (widthInput && lengthInput) {
+                widthInput.value = "1";
+                lengthInput.value = "";
+                const newWidthId = "width-" + Math.random().toString(36).substring(7);
+                const newLengthId = "length-" + Math.random().toString(36).substring(7);
+                widthInput.id = newWidthId;
+                lengthInput.id = newLengthId;
+                newBlock.querySelector('label[for="width"]').setAttribute("for", newWidthId);
+                newBlock.querySelector('label[for="length"]').setAttribute("for", newLengthId);
+            }
+            newBlock.querySelectorAll('input[type="number"]').forEach((input => {
+                input.value = "";
+                if (input.classList.contains("count-inp")) input.value = "1";
+            }));
+            const addBlock = document.querySelector(containerSelector);
+            if (addBlock) addBlock.parentNode.insertBefore(newBlock, addBlock);
+            setupQuantityHandlers(newBlock);
+        }
+        function setupQuantityHandlers(container) {
+            const input = container.querySelector(".count-inp");
+            const btnMinus = container.querySelector(".minus");
+            const btnPlus = container.querySelector(".plus");
+            if (input && btnMinus && btnPlus) {
+                btnPlus.addEventListener("click", (() => {
+                    const currentValue = parseInt(input.value);
+                    input.value = isNaN(currentValue) ? 1 : currentValue + 1;
+                }));
+                btnMinus.addEventListener("click", (() => {
+                    const currentValue = parseInt(input.value);
+                    if (!isNaN(currentValue) && currentValue > 1) input.value = currentValue - 1;
+                }));
+            }
+        }
+        if (popupAddPc) popupAddPc.addEventListener("click", (function(e) {
+            e.preventDefault();
+            addNewBlock(".calc__add", ".calc__inputs-row");
+        }));
+        if (popupAddMob) popupAddMob.addEventListener("click", (function(e) {
+            e.preventDefault();
+            document.querySelector(".popup_onsize").classList.add("onsize-on");
+            addNewBlock(".popup-size__add", ".popup-size__forms");
+        }));
+        setupQuantityHandlers(document.querySelector(".calc__inputs-row"));
+        setupQuantityHandlers(document.querySelector(".popup-size__forms"));
         const modalBtns = document.querySelectorAll(".tabs__item-btn");
         const modalTabs = document.querySelectorAll(".modal-options .tabs__item");
-        const modalTabsBtn = document.querySelectorAll(".tabs__button");
+        const modalTabsBtn = document.querySelectorAll(".modal-options .tabs__button");
         if (modalBtns.length > 0 && modalTabs.length > 0 && modalTabsBtn.length > 0) modalBtns.forEach((btn => {
             btn.addEventListener("click", (function(e) {
-                if (btn.classList.contains("tabs__item-btn_next") && !btn.classList.contains("tabs__item-btn_final")) {
-                    document.querySelector(".modal-options .tabs__item._active").classList.remove("_active");
-                    document.querySelector(".modal-options .tabs__button._active").classList.remove("_active");
-                    modalTabs[btn.dataset.step].classList.add("_active");
-                    modalTabsBtn[btn.dataset.step].classList.add("_active");
+                let step = parseInt(btn.dataset.step) - 1;
+                const isFinalStep = btn.classList.contains("tabs__item-btn_final");
+                const activeTab = document.querySelector(".modal-options .tabs__item._active");
+                const activeTabBtn = document.querySelector(".modal-options .tabs__button._active");
+                if (activeTab && activeTabBtn && !isFinalStep) {
+                    activeTab.classList.remove("_active");
+                    activeTabBtn.classList.remove("_active");
                 }
-                if (btn.classList.contains("tabs__item-btn_back") && !btn.classList.contains("tabs__item-btn_first")) {
-                    console.log(1234);
-                    document.querySelector(".modal-options .tabs__item._active").classList.remove("_active");
-                    modalTabs[btn.dataset.step - 2].classList.add("_active");
-                    document.querySelector(".modal-options .tabs__button._active").classList.remove("_active");
-                    modalTabsBtn[btn.dataset.step - 2].classList.add("_active");
+                if (btn.classList.contains("tabs__item-btn_next") && !isFinalStep) if (step + 1 < modalTabs.length && step + 1 < modalTabsBtn.length) {
+                    modalTabs[step + 1].classList.add("_active");
+                    modalTabsBtn[step + 1].classList.add("_active");
+                } else {
+                    modalTabs[step].classList.add("_active");
+                    modalTabsBtn[step].classList.add("_active");
+                }
+                if (btn.classList.contains("tabs__item-btn_back")) if (step - 1 >= 0 && step - 1 < modalTabs.length && step - 1 < modalTabsBtn.length) {
+                    modalTabs[step - 1].classList.add("_active");
+                    modalTabsBtn[step - 1].classList.add("_active");
+                } else {
+                    modalTabs[step].classList.add("_active");
+                    modalTabsBtn[step].classList.add("_active");
+                }
+                if (isFinalStep) if (step >= 0 && step < modalTabs.length && step < modalTabsBtn.length) {
+                    modalTabs[step].classList.add("_active");
+                    modalTabsBtn[step].classList.add("_active");
                 }
             }));
         }));
@@ -12563,6 +12644,7 @@
         }));
         const imageUpload = document.getElementById("imageUpload");
         const imageContainer = document.getElementById("imageContainer");
+        const downloadCountDisplay = document.querySelector(".popup__downloads span");
         let uploadedImages = [];
         if (imageUpload && imageContainer) imageUpload.addEventListener("change", (event => {
             const files = event.target.files;
@@ -12586,18 +12668,31 @@
                     img.innerHTML = `<img src="${e.target.result}" alt="Загруженное изображение">`;
                     const closeButton = document.createElement("div");
                     closeButton.classList.add("close-button");
-                    closeButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <rect width="16" height="16" rx="8" fill="#333333" />\n  <path d="M11.1426 4.85693L4.85702 11.1425" stroke="white" />\n  <path d="M11.1426 11.1431L4.85702 4.8575" stroke="white" />\n</svg>`;
-                    closeButton.addEventListener("click", (() => {
+                    closeButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n                    <rect width="16" height="16" rx="8" fill="#333333" />\n                    <path d="M11.1426 4.85693L4.85702 11.1425" stroke="white" />\n                    <path d="M11.1426 11.1431L4.85702 4.8575" stroke="white" />\n                </svg>`;
+                    closeButton.addEventListener("click", (e => {
+                        e.stopPropagation();
                         imageContainer.removeChild(img);
                         uploadedImages = uploadedImages.filter((item => item !== file));
+                        updateDownloadCount();
                     }));
                     img.appendChild(closeButton);
                     imageContainer.appendChild(img);
                     uploadedImages.push(file);
+                    updateDownloadCount();
                 };
                 reader.readAsDataURL(file);
             }
         }));
+        function updateDownloadCount() {
+            if (downloadCountDisplay) downloadCountDisplay.textContent = uploadedImages.length;
+        }
+        const productMenu = document.querySelector(".product-menu");
+        const sections = document.querySelectorAll("section");
+        function handleScroll() {
+            const secondSectionBottom = sections[1].getBoundingClientRect().bottom;
+            if (secondSectionBottom < window.innerHeight) productMenu.classList.add("_active"); else productMenu.classList.remove("_active");
+        }
+        window.addEventListener("scroll", handleScroll);
         window.addEventListener("load", (function() {
             const preloader = document.getElementById("preloader");
             preloader.style.display = "none";
