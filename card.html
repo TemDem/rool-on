@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="format-detection" content="telephone=no">
 	<!-- <style>body{opacity: 0;}</style> -->
-	<link rel="stylesheet" href="css/style.min.css?_v=20241003213006">
+	<link rel="stylesheet" href="css/style.min.css?_v=20241004165823">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- <meta name="robots" content="noindex, nofollow"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,7 +65,7 @@
 									<img src="img/icons/favorites.svg" alt="">
 								</a>
 							</div>
-							<h1 class="product__title">Респект ФР Светло-серый Блэкаут</h1>
+							<h1 data-popup="#thanks" class="product__title">Респект ФР Светло-серый Блэкаут</h1>
 							<div class="product__subtitle-block">
 								<div class="product__reviews">
 									<span class="product__grade">
@@ -74,7 +74,7 @@
 									</span>
 									<a href="#" class="link">12 отзывов</a>
 								</div>
-								<a href="#" class="link">Бесплатный образец ткани</a>
+								<a href="#" data-popup="#free" class="link">Бесплатный образец ткани</a>
 							</div>
 							<div class="calc__block">
 								<div class="calc__block-head">
@@ -109,7 +109,7 @@
 										</div>
 									</div>
 									<div class="calc__add">
-										<a href="">Добавить размер +</a>
+										<a data-popup="#size" href="">Добавить размер +</a>
 									</div>
 								</div>
 								<div class="product__price">
@@ -403,7 +403,7 @@
 											</p>
 										</div>
 										<div class="zamer__btn">
-											<button class="button1 button-black">Заказать замерщика</button>
+											<button data-popup="#order" class="button1 button-black">Заказать замерщика</button>
 											<p class="body3"><strong>От 199 ₽</strong>, замерщик приедет
 												<strong>завтра</strong>
 											</p>
@@ -769,7 +769,7 @@
 							<!-- </div> -->
 
 						</div>
-						<div class="tabs__item" id="btab_2">
+						<div class="tabs__item tabs__item_zamer" id="btab_2">
 
 
 							<div class="tab__zamer tab__zamer_full">
@@ -788,7 +788,7 @@
 											идеально
 											установленные шторы с расширенной гарантией.</p>
 									</div>
-									<div class="zakaz__montaja">
+									<div data-da=".tabs__item_zamer, 1441, last" class="zakaz__montaja">
 										<div class="inner">
 											<div class="content">
 												<p class="subtitle">Закажи профессиональный монтаж</p>
@@ -899,7 +899,7 @@
 								Мы очень хотим узнать ваше мнение о нашем продукте.
 								Это займет всего пару кликов.
 							</div>
-							<button class="reviews__btn button1 button-black">
+							<button data-popup="#review" class="reviews__btn button1 button-black">
 								Добавить отзыв
 							</button>
 						</div>
@@ -927,7 +927,7 @@
 							</div>
 						</div>
 						<div class="reviews__top-right">
-							<button class="reviews__btn button1 button-black">
+							<button data-popup="#review" class="reviews__btn button1 button-black">
 								Оставить отзыв
 							</button>
 						</div>
@@ -1941,19 +1941,197 @@
 
 		</div>
 	</div>
-	<!-- 
-<div id="popup" aria-hidden="true" class="popup">
-	<div class="popup__wrapper">
-		<div class="popup__content">
-			<button data-close type="button" class="popup__close">Закрыть</button>
-			<div class="popup__text">
+
+	<div id="size" aria-hidden="true" class="popup">
+		<div class="popup__wrapper">
+			<div class="popup__content">
+				<button data-close type="button" class="popup__close">
+					<img src="img/icons/close.svg" alt="close">
+				</button>
+				<div class="popup__body">
+					<div class="popup__title">Гарантия точного замера</div>
+					<div class="popup__text text">
+						Мы понимаем что замер может быть сложным и ответственным, но не переживайте. С нашей услугой гарантии точного замера
+						мы заменим или исправим ваши шторы, если вы ошиблись в измерениях и изделие не подошло по размеру
+					</div>
+					<a href="" class="popup__link">
+						Подробнее об услуге
+					</a>
+					<div class="popup__bottom">
+						<div class="popup__text-bottom">
+							Стоимость услуги — 499 ₽
+						</div>
+						<button class="popup__btn button1 button-black">
+							Добавить гарантию точного замера
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
- -->
 
-	<script src="js/app.min.js?_v=20241003213006"></script>
+	<div id="order" aria-hidden="true" class="popup popup_order">
+		<div class="popup__wrapper">
+			<div class="popup__content">
+				<button data-close type="button" class="popup__close">
+					<img src="img/icons/close.svg" alt="close">
+				</button>
+				<div class="popup__body">
+					<div class="popup__title">Гарантия точного замера</div>
+					<div class="popup__row">
+						<div class="popup__cnt">
+
+							<div class="popup__text text">
+								Мы понимаем что замер может быть сложным и ответственным, но не переживайте. С нашей услугой
+								гарантии точного замера
+								мы заменим или исправим ваши шторы, если вы ошиблись в измерениях и изделие не подошло
+								по размеру
+							</div>
+							<form action="#" class="how__form">
+								<div class="how__descr">Выберите удобную дату и время
+									для приезда замерщика</div>
+								<div class="how__grid">
+									<input placeholder="05.10.2024" type="date" class="datepicker">
+									<select name="form[]" class="form">
+										<option value="1" selected>12:00 - 13:00
+										</option>
+										<option value="2">13:00 - 14:00</option>
+										<option value="3">15:00 - 16:00</option>
+										<option value="4">16:00 - 17:00</option>
+									</select>
+									<input class="how__name" type="text" placeholder="Укажите ваше имя">
+									<input type="text" class="how__tel input-tel" placeholder="+7 (___) ___-__-__">
+								</div>
+								<label>
+									<input type="checkbox">
+									<span><span>Я согласен с <a href="">политикой
+												конфиденциальности</a></span></span>
+								</label>
+								<button class="button1 button-black">Записаться на
+									замер</button>
+							</form>
+						</div>
+						<div class="popup__image">
+							<picture><source srcset="img/product-card/popup-order.webp" type="image/webp"><img src="img/product-card/popup-order.jpg" alt="image"></picture>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="free" aria-hidden="true" class="popup popup_small">
+		<div class="popup__wrapper">
+			<div class="popup__content">
+				<button data-close type="button" class="popup__close">
+					<img src="img/icons/close.svg" alt="close">
+				</button>
+				<div class="popup__body">
+					<div class="popup__title">Закажите бесплатные образцы, чтобы удобно оценить качество ткани</div>
+					<div class="popup__text text">
+						<p>
+							Мы понимаем, что сделать выбор только по фотографиям на сайте может быть затруднительно, а вызывать замерщика домой
+							не всегда комфортно. Поэтому предлагаем уникальную возможность заказать до 5 бесплатных образцов тканей.
+						</p>
+
+						<p>Это позволит вам лучше оценить текстуру и цвет материалов, чтобы сделать идеальный выбор для вашего дома!</p>
+					</div>
+
+					<div class="popup__bottom">
+
+						<button class="popup__btn button1 button-black">
+							Добавить в корзину
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="thanks" aria-hidden="true" class="popup popup_thanks popup_small">
+		<div class="popup__wrapper">
+			<div class="popup__content">
+				<button data-close type="button" class="popup__close">
+					<img src="img/icons/close.svg" alt="close">
+				</button>
+				<div class="popup__body">
+					<div class="popup__title">Спасибо, мы приняли вашу заявку на Онлайн-замер</div>
+					<div class="popup__text text">
+						<p class="strong">
+							Специалист свяжется с вами 12.08.2024 с 12:00 до 12:30
+						</p>
+
+						<p>Наш менеджер дополнительно свяжется с вами перед датой замера.</p>
+						<p>Задать вопрос, отменить или перенести услугу можно по
+							номеру телефона <a href="tel:+79999999999">+7 (999) 999-99-99</a></p>
+					</div>
+
+					<div class="popup__bottom">
+
+						<button data-close class="popup__btn button1 button-black">
+							Ок
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="review" aria-hidden="true" class="popup popup_review">
+		<div class="popup__wrapper">
+			<form action="#" class="popup__content">
+				<button data-close type="button" class="popup__close">
+					<img src="img/icons/close.svg" alt="close">
+				</button>
+				<div class="popup__body">
+					<div class="popup__title">Оставьте свой отзыв о товаре</div>
+					<div class="popup__text">
+						Респект ФР Светло-серый Блэкаут
+					</div>
+					<div class="popup__raiting">
+						<span>Оцените товар</span>
+						<div class="rating rating_set">
+							<div class="rating__body">
+								<div class="rating__active"></div>
+								<div class="rating__items">
+									<input type="radio" class="rating__item" value="1" name="rating">
+									<input type="radio" class="rating__item" value="2" name="rating">
+									<input type="radio" class="rating__item" value="3" name="rating">
+									<input type="radio" class="rating__item" value="4" name="rating">
+									<input type="radio" class="rating__item" value="5" name="rating">
+								</div>
+							</div>
+							<div class="rating__value">4.0</div>
+							<div class="raiting__all">/5.0</div>
+						</div>
+					</div>
+					<div class="popup__textarea">
+						<span>0/500</span>
+						<textarea placeholder="Введите текст отзыва" name="review"></textarea>
+					</div>
+					<div class="popup__images">
+						<div class="popup__upload-images" id="imageContainer"></div>
+						<div class="popup__downloads">
+							Загружено 0 из 10 фото
+						</div>
+						<div class="popup__downloads-row">
+							<div class="popup__upload">
+								<input id="imageUpload" accept=".png, .jpg" multiple type="file" class="popup__btn" />
+								<span>+ Загрузить фото</span>
+							</div>
+							<span>JPEG, PNG, до 20 мб</span>
+						</div>
+					</div>
+					<div class="popup__input">
+						<input type="text" placeholder="Введите ваше имя">
+					</div>
+					<button class="popup__btn button1 button-black">Опубликовать отзыв</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="js/app.min.js?_v=20241004165823"></script>
 </body>
 
 </html>
