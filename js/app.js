@@ -3876,6 +3876,41 @@
         let _slideToggle = (target, duration = 500) => {
             if (target.hidden) return _slideDown(target, duration); else return _slideUp(target, duration);
         };
+        let bodyLockStatus = true;
+        let bodyUnlock = (delay = 500) => {
+            let body = document.querySelector("body");
+            if (bodyLockStatus) {
+                let lock_padding = document.querySelectorAll("[data-lp]");
+                setTimeout((() => {
+                    for (let index = 0; index < lock_padding.length; index++) {
+                        const el = lock_padding[index];
+                        el.style.paddingRight = "0px";
+                    }
+                    body.style.paddingRight = "0px";
+                    document.documentElement.classList.remove("lock");
+                }), delay);
+                bodyLockStatus = false;
+                setTimeout((function() {
+                    bodyLockStatus = true;
+                }), delay);
+            }
+        };
+        let bodyLock = (delay = 500) => {
+            let body = document.querySelector("body");
+            if (bodyLockStatus) {
+                let lock_padding = document.querySelectorAll("[data-lp]");
+                for (let index = 0; index < lock_padding.length; index++) {
+                    const el = lock_padding[index];
+                    el.style.paddingRight = window.innerWidth - document.querySelector(".wrapper").offsetWidth + "px";
+                }
+                body.style.paddingRight = window.innerWidth - document.querySelector(".wrapper").offsetWidth + "px";
+                document.documentElement.classList.add("lock");
+                bodyLockStatus = false;
+                setTimeout((function() {
+                    bodyLockStatus = true;
+                }), delay);
+            }
+        };
         function spollers() {
             const spollersArray = document.querySelectorAll("[data-spollers]");
             if (spollersArray.length > 0) {
@@ -4104,6 +4139,251 @@
                 }
             }
         }
+        class Popup {
+            constructor(options) {
+                let config = {
+                    logging: true,
+                    init: true,
+                    attributeOpenButton: "data-popup",
+                    attributeCloseButton: "data-close",
+                    fixElementSelector: "[data-lp]",
+                    youtubeAttribute: "data-popup-youtube",
+                    youtubePlaceAttribute: "data-popup-youtube-place",
+                    setAutoplayYoutube: true,
+                    classes: {
+                        popup: "popup",
+                        popupContent: "popup__content",
+                        popupActive: "popup_show",
+                        bodyActive: "popup-show"
+                    },
+                    focusCatch: true,
+                    closeEsc: true,
+                    bodyLock: true,
+                    hashSettings: {
+                        location: true,
+                        goHash: true
+                    },
+                    on: {
+                        beforeOpen: function() {},
+                        afterOpen: function() {},
+                        beforeClose: function() {},
+                        afterClose: function() {}
+                    }
+                };
+                this.youTubeCode;
+                this.isOpen = false;
+                this.targetOpen = {
+                    selector: false,
+                    element: false
+                };
+                this.previousOpen = {
+                    selector: false,
+                    element: false
+                };
+                this.lastClosed = {
+                    selector: false,
+                    element: false
+                };
+                this._dataValue = false;
+                this.hash = false;
+                this._reopen = false;
+                this._selectorOpen = false;
+                this.lastFocusEl = false;
+                this._focusEl = [ "a[href]", 'input:not([disabled]):not([type="hidden"]):not([aria-hidden])', "button:not([disabled]):not([aria-hidden])", "select:not([disabled]):not([aria-hidden])", "textarea:not([disabled]):not([aria-hidden])", "area[href]", "iframe", "object", "embed", "[contenteditable]", '[tabindex]:not([tabindex^="-"])' ];
+                this.options = {
+                    ...config,
+                    ...options,
+                    classes: {
+                        ...config.classes,
+                        ...options?.classes
+                    },
+                    hashSettings: {
+                        ...config.hashSettings,
+                        ...options?.hashSettings
+                    },
+                    on: {
+                        ...config.on,
+                        ...options?.on
+                    }
+                };
+                this.bodyLock = false;
+                this.options.init ? this.initPopups() : null;
+            }
+            initPopups() {
+                this.popupLogging(`Проснулся`);
+                this.eventsPopup();
+            }
+            eventsPopup() {
+                document.addEventListener("click", function(e) {
+                    const buttonOpen = e.target.closest(`[${this.options.attributeOpenButton}]`);
+                    if (buttonOpen) {
+                        e.preventDefault();
+                        this._dataValue = buttonOpen.getAttribute(this.options.attributeOpenButton) ? buttonOpen.getAttribute(this.options.attributeOpenButton) : "error";
+                        this.youTubeCode = buttonOpen.getAttribute(this.options.youtubeAttribute) ? buttonOpen.getAttribute(this.options.youtubeAttribute) : null;
+                        if (this._dataValue !== "error") {
+                            if (!this.isOpen) this.lastFocusEl = buttonOpen;
+                            this.targetOpen.selector = `${this._dataValue}`;
+                            this._selectorOpen = true;
+                            this.open();
+                            return;
+                        } else this.popupLogging(`Ой ой, не заполнен атрибут у ${buttonOpen.classList}`);
+                        return;
+                    }
+                    const buttonClose = e.target.closest(`[${this.options.attributeCloseButton}]`);
+                    if (buttonClose || !e.target.closest(`.${this.options.classes.popupContent}`) && this.isOpen) {
+                        e.preventDefault();
+                        this.close();
+                        return;
+                    }
+                }.bind(this));
+                document.addEventListener("keydown", function(e) {
+                    if (this.options.closeEsc && e.which == 27 && e.code === "Escape" && this.isOpen) {
+                        e.preventDefault();
+                        this.close();
+                        return;
+                    }
+                    if (this.options.focusCatch && e.which == 9 && this.isOpen) {
+                        this._focusCatch(e);
+                        return;
+                    }
+                }.bind(this));
+                if (this.options.hashSettings.goHash) {
+                    window.addEventListener("hashchange", function() {
+                        if (window.location.hash) this._openToHash(); else this.close(this.targetOpen.selector);
+                    }.bind(this));
+                    window.addEventListener("load", function() {
+                        if (window.location.hash) this._openToHash();
+                    }.bind(this));
+                }
+            }
+            open(selectorValue) {
+                if (bodyLockStatus) {
+                    this.bodyLock = document.documentElement.classList.contains("lock") ? true : false;
+                    if (selectorValue && typeof selectorValue === "string" && selectorValue.trim() !== "") {
+                        this.targetOpen.selector = selectorValue;
+                        this._selectorOpen = true;
+                    }
+                    if (this.isOpen) {
+                        this._reopen = true;
+                        this.close();
+                    }
+                    if (!this._selectorOpen) this.targetOpen.selector = this.lastClosed.selector;
+                    if (!this._reopen) this.previousActiveElement = document.activeElement;
+                    this.targetOpen.element = document.querySelector(this.targetOpen.selector);
+                    if (this.targetOpen.element) {
+                        if (this.youTubeCode) {
+                            const codeVideo = this.youTubeCode;
+                            const urlVideo = `https://www.youtube.com/embed/${codeVideo}?rel=0&showinfo=0&autoplay=1`;
+                            const iframe = document.createElement("iframe");
+                            iframe.setAttribute("allowfullscreen", "");
+                            const autoplay = this.options.setAutoplayYoutube ? "autoplay;" : "";
+                            iframe.setAttribute("allow", `${autoplay}; encrypted-media`);
+                            iframe.setAttribute("src", urlVideo);
+                            if (!this.targetOpen.element.querySelector(`[${this.options.youtubePlaceAttribute}]`)) {
+                                this.targetOpen.element.querySelector(".popup__text").setAttribute(`${this.options.youtubePlaceAttribute}`, "");
+                            }
+                            this.targetOpen.element.querySelector(`[${this.options.youtubePlaceAttribute}]`).appendChild(iframe);
+                        }
+                        if (this.options.hashSettings.location) {
+                            this._getHash();
+                            this._setHash();
+                        }
+                        this.options.on.beforeOpen(this);
+                        document.dispatchEvent(new CustomEvent("beforePopupOpen", {
+                            detail: {
+                                popup: this
+                            }
+                        }));
+                        this.targetOpen.element.classList.add(this.options.classes.popupActive);
+                        document.documentElement.classList.add(this.options.classes.bodyActive);
+                        if (!this._reopen) !this.bodyLock ? bodyLock() : null; else this._reopen = false;
+                        this.targetOpen.element.setAttribute("aria-hidden", "false");
+                        this.previousOpen.selector = this.targetOpen.selector;
+                        this.previousOpen.element = this.targetOpen.element;
+                        this._selectorOpen = false;
+                        this.isOpen = true;
+                        setTimeout((() => {
+                            this._focusTrap();
+                        }), 50);
+                        this.options.on.afterOpen(this);
+                        document.dispatchEvent(new CustomEvent("afterPopupOpen", {
+                            detail: {
+                                popup: this
+                            }
+                        }));
+                        this.popupLogging(`Открыл попап`);
+                    } else this.popupLogging(`Ой ой, такого попапа нет.Проверьте корректность ввода. `);
+                }
+            }
+            close(selectorValue) {
+                if (selectorValue && typeof selectorValue === "string" && selectorValue.trim() !== "") this.previousOpen.selector = selectorValue;
+                if (!this.isOpen || !bodyLockStatus) return;
+                this.options.on.beforeClose(this);
+                document.dispatchEvent(new CustomEvent("beforePopupClose", {
+                    detail: {
+                        popup: this
+                    }
+                }));
+                if (this.youTubeCode) if (this.targetOpen.element.querySelector(`[${this.options.youtubePlaceAttribute}]`)) this.targetOpen.element.querySelector(`[${this.options.youtubePlaceAttribute}]`).innerHTML = "";
+                this.previousOpen.element.classList.remove(this.options.classes.popupActive);
+                this.previousOpen.element.setAttribute("aria-hidden", "true");
+                if (!this._reopen) {
+                    document.documentElement.classList.remove(this.options.classes.bodyActive);
+                    !this.bodyLock ? bodyUnlock() : null;
+                    this.isOpen = false;
+                }
+                this._removeHash();
+                if (this._selectorOpen) {
+                    this.lastClosed.selector = this.previousOpen.selector;
+                    this.lastClosed.element = this.previousOpen.element;
+                }
+                this.options.on.afterClose(this);
+                document.dispatchEvent(new CustomEvent("afterPopupClose", {
+                    detail: {
+                        popup: this
+                    }
+                }));
+                setTimeout((() => {
+                    this._focusTrap();
+                }), 50);
+                this.popupLogging(`Закрыл попап`);
+            }
+            _getHash() {
+                if (this.options.hashSettings.location) this.hash = this.targetOpen.selector.includes("#") ? this.targetOpen.selector : this.targetOpen.selector.replace(".", "#");
+            }
+            _openToHash() {
+                let classInHash = document.querySelector(`.${window.location.hash.replace("#", "")}`) ? `.${window.location.hash.replace("#", "")}` : document.querySelector(`${window.location.hash}`) ? `${window.location.hash}` : null;
+                const buttons = document.querySelector(`[${this.options.attributeOpenButton} = "${classInHash}"]`) ? document.querySelector(`[${this.options.attributeOpenButton} = "${classInHash}"]`) : document.querySelector(`[${this.options.attributeOpenButton} = "${classInHash.replace(".", "#")}"]`);
+                if (buttons && classInHash) this.open(classInHash);
+            }
+            _setHash() {
+                history.pushState("", "", this.hash);
+            }
+            _removeHash() {
+                history.pushState("", "", window.location.href.split("#")[0]);
+            }
+            _focusCatch(e) {
+                const focusable = this.targetOpen.element.querySelectorAll(this._focusEl);
+                const focusArray = Array.prototype.slice.call(focusable);
+                const focusedIndex = focusArray.indexOf(document.activeElement);
+                if (e.shiftKey && focusedIndex === 0) {
+                    focusArray[focusArray.length - 1].focus();
+                    e.preventDefault();
+                }
+                if (!e.shiftKey && focusedIndex === focusArray.length - 1) {
+                    focusArray[0].focus();
+                    e.preventDefault();
+                }
+            }
+            _focusTrap() {
+                const focusable = this.previousOpen.element.querySelectorAll(this._focusEl);
+                if (!this.isOpen && this.lastFocusEl) this.lastFocusEl.focus(); else focusable[0].focus();
+            }
+            popupLogging(message) {
+                this.options.logging ? functions_FLS(`[Попапос]: ${message}`) : null;
+            }
+        }
+        modules_flsModules.popup = new Popup({});
         let formValidate = {
             getErrors(form) {
                 let error = 0;
@@ -4170,6 +4450,68 @@
                 return !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,8})+$/.test(formRequiredItem.value);
             }
         };
+        function formRating() {
+            const ratings = document.querySelectorAll(".rating");
+            if (ratings.length > 0) initRatings();
+            function initRatings() {
+                let ratingActive, ratingValue;
+                for (let index = 0; index < ratings.length; index++) {
+                    const rating = ratings[index];
+                    initRating(rating);
+                }
+                function initRating(rating) {
+                    initRatingVars(rating);
+                    setRatingActiveWidth();
+                    if (rating.classList.contains("rating_set")) setRating(rating);
+                }
+                function initRatingVars(rating) {
+                    ratingActive = rating.querySelector(".rating__active");
+                    ratingValue = rating.querySelector(".rating__value");
+                }
+                function setRatingActiveWidth(index = ratingValue.innerHTML) {
+                    const ratingActiveWidth = index / .05;
+                    ratingActive.style.width = `${ratingActiveWidth}%`;
+                }
+                function setRating(rating) {
+                    const ratingItems = rating.querySelectorAll(".rating__item");
+                    for (let index = 0; index < ratingItems.length; index++) {
+                        const ratingItem = ratingItems[index];
+                        ratingItem.addEventListener("mouseenter", (function(e) {
+                            initRatingVars(rating);
+                            setRatingActiveWidth(ratingItem.value);
+                        }));
+                        ratingItem.addEventListener("mouseleave", (function(e) {
+                            setRatingActiveWidth();
+                        }));
+                        ratingItem.addEventListener("click", (function(e) {
+                            initRatingVars(rating);
+                            if (rating.dataset.ajax) setRatingValue(ratingItem.value, rating); else {
+                                ratingValue.innerHTML = index + 1;
+                                setRatingActiveWidth();
+                            }
+                        }));
+                    }
+                }
+                async function setRatingValue(value, rating) {
+                    if (!rating.classList.contains("rating_sending")) {
+                        rating.classList.add("rating_sending");
+                        let response = await fetch("rating.json", {
+                            method: "GET"
+                        });
+                        if (response.ok) {
+                            const result = await response.json();
+                            const newRating = result.newRating;
+                            ratingValue.innerHTML = newRating;
+                            setRatingActiveWidth();
+                            rating.classList.remove("rating_sending");
+                        } else {
+                            alert("Ошибка");
+                            rating.classList.remove("rating_sending");
+                        }
+                    }
+                }
+            }
+        }
         class SelectConstructor {
             constructor(props, data = null) {
                 let defaultConfig = {
@@ -12178,11 +12520,11 @@
             const optionsModal = document.querySelector(".modal-options");
             if (e.target.closest(".options__btn")) {
                 optionsModal.classList.add("_active");
-                document.documentElement.classList.add("lock");
+                document.documentElement.classList.add("modal");
             }
             if (!e.target.closest(".options__btn") && !e.target.closest(".modal-options") || e.target.closest(".modal-options__close")) {
                 optionsModal.classList.remove("_active");
-                document.documentElement.classList.remove("lock");
+                document.documentElement.classList.remove("modal");
             }
         }));
         const modalBtns = document.querySelectorAll(".tabs__item-btn");
@@ -12219,6 +12561,43 @@
                 }
             }
         }));
+        const imageUpload = document.getElementById("imageUpload");
+        const imageContainer = document.getElementById("imageContainer");
+        let uploadedImages = [];
+        if (imageUpload && imageContainer) imageUpload.addEventListener("change", (event => {
+            const files = event.target.files;
+            if (uploadedImages.length + files.length > 10) {
+                alert("Вы можете загрузить не более 10 изображений!");
+                return;
+            }
+            for (let i = 0; i < files.length; i++) {
+                const fileType = files[i].type;
+                if (fileType !== "image/png" && fileType !== "image/jpeg") {
+                    alert("Допустимы только PNG и JPG изображения!");
+                    return;
+                }
+            }
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader;
+                reader.onload = e => {
+                    const img = document.createElement("div");
+                    img.classList.add("image-item");
+                    img.innerHTML = `<img src="${e.target.result}" alt="Загруженное изображение">`;
+                    const closeButton = document.createElement("div");
+                    closeButton.classList.add("close-button");
+                    closeButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">\n  <rect width="16" height="16" rx="8" fill="#333333" />\n  <path d="M11.1426 4.85693L4.85702 11.1425" stroke="white" />\n  <path d="M11.1426 11.1431L4.85702 4.8575" stroke="white" />\n</svg>`;
+                    closeButton.addEventListener("click", (() => {
+                        imageContainer.removeChild(img);
+                        uploadedImages = uploadedImages.filter((item => item !== file));
+                    }));
+                    img.appendChild(closeButton);
+                    imageContainer.appendChild(img);
+                    uploadedImages.push(file);
+                };
+                reader.readAsDataURL(file);
+            }
+        }));
         window.addEventListener("load", (function() {
             const preloader = document.getElementById("preloader");
             preloader.style.display = "none";
@@ -12229,5 +12608,6 @@
         isWebp();
         spollers();
         showMore();
+        formRating();
     })();
 })();
