@@ -12397,7 +12397,25 @@
         const esm = flatpickr;
         let timeout;
         if (document.querySelector(".datepicker")) esm(".datepicker", {
-            dateFormat: "d.m.Y"
+            dateFormat: "Y-m-d",
+            plugins: [],
+            onReady: function(selectedDates, dateStr, instance) {
+                const prevButton = document.createElement("button");
+                prevButton.innerHTML = "Назад";
+                prevButton.className = "flatpickr-button flatpickr-prev-month";
+                prevButton.onclick = function() {
+                    instance.jumpToDate(new Date(instance.currentYear, instance.currentMonth - 1));
+                };
+                const selectButton = document.createElement("button");
+                selectButton.innerHTML = "Выбрать";
+                selectButton.className = "flatpickr-button flatpickr-confirm-button";
+                selectButton.onclick = function() {
+                    instance.close();
+                };
+                const calendarContainer = instance.calendarContainer;
+                calendarContainer.appendChild(prevButton);
+                calendarContainer.appendChild(selectButton);
+            }
         });
         document.querySelector("body");
         document.getElementById("width").addEventListener("input", (() => handleInputChange()));

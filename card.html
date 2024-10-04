@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="format-detection" content="telephone=no">
 	<!-- <style>body{opacity: 0;}</style> -->
-	<link rel="stylesheet" href="css/style.min.css?_v=20241005013424">
+	<link rel="stylesheet" href="css/style.min.css?_v=20241005032255">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- <meta name="robots" content="noindex, nofollow"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,14 +118,14 @@
 									<span class="sale-percent">-44%</span>
 									<span class="old-price">12 000 ₽</span>
 								</div>
-								<div class="insurance">
+								<div data-popup="#size" class="insurance">
 									<input checked id="insurance__input" type="checkbox">
 									<label for="insurance__input">Страховка от ошибки при замере — <strong>0
 											₽</strong></label>
 									<span>499 ₽
-										<a href="#" data-tippy-content="Подсказка" class="tool-question tool-question_bottom">
+										<div class="tool-question tool-question_bottom">
 											<img src="img/icons/tool-tip.svg" alt="icon">
-										</a>
+										</div>
 									</span>
 								</div>
 							</div>
@@ -505,7 +505,7 @@
 													<div class="how__descr">Выберите удобную дату и время
 														для приезда замерщика</div>
 													<div class="how__grid">
-														<input type="date" placeholder="05.10.2024" class="datepicker">
+														<input type="text" placeholder="05.10.2024" class="datepicker">
 														<select name="form[]" class="form">
 															<option value="1" selected>12:00 - 13:00
 															</option>
@@ -605,7 +605,7 @@
 												<div class="how__descr">Выберите удобную дату и время для
 													приезда замерщика</div>
 												<div class="how__grid">
-													<input type="date" class="datepicker">
+													<input type="text" class="datepicker">
 													<select name="form[]" class="form">
 														<option value="1" selected>12:00 - 13:00</option>
 														<option value="2">13:00 - 14:00</option>
@@ -2246,7 +2246,7 @@
 			Навигационное меню
 		</div>
 	</div>
-	<script src="js/app.min.js?_v=20241005013424"></script>
+	<script src="js/app.min.js?_v=20241005032255"></script>
 </body>
 
 </html>
