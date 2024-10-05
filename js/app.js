@@ -12716,13 +12716,8 @@
         const sections = document.querySelectorAll("section");
         function handleScroll() {
             const secondSectionBottom = sections[1].getBoundingClientRect().bottom;
-            if (secondSectionBottom < window.innerHeight) {
-                headerFix.classList.add("_active");
-                productMenu.classList.add("_active");
-            } else {
-                headerFix.classList.remove("_active");
-                productMenu.classList.remove("_active");
-            }
+            productMenu.classList.add("_active");
+            if (secondSectionBottom < window.innerHeight) headerFix.classList.add("_active"); else headerFix.classList.remove("_active");
         }
         window.addEventListener("scroll", handleScroll);
         window.addEventListener("load", (function() {
