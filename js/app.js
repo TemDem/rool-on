@@ -12564,6 +12564,7 @@
         }));
         const popupAddPc = document.querySelector(".calc__add a");
         const popupAddMob = document.querySelector("a.popup-size__add");
+        const menuAddMob = document.querySelector("a.popup-size__adding");
         function addNewBlock(containerSelector, blockSelector) {
             const blockToCopy = document.querySelector(blockSelector);
             const newBlock = blockToCopy.cloneNode(true);
@@ -12596,6 +12597,7 @@
                     const currentValue = parseInt(input.value);
                     input.value = isNaN(currentValue) ? 1 : currentValue + 1;
                 }));
+                console.log(1234);
                 btnMinus.addEventListener("click", (() => {
                     const currentValue = parseInt(input.value);
                     if (!isNaN(currentValue) && currentValue > 1) input.value = currentValue - 1;
@@ -12609,10 +12611,15 @@
         if (popupAddMob) popupAddMob.addEventListener("click", (function(e) {
             e.preventDefault();
             document.querySelector(".popup_onsize").classList.add("onsize-on");
-            addNewBlock(".popup-size__add", ".popup-size__forms");
+            addNewBlock(".popup_onsize .popup-size__add", ".popup_onsize .popup-size__forms");
+        }));
+        if (menuAddMob) menuAddMob.addEventListener("click", (function(e) {
+            e.preventDefault();
+            addNewBlock(".header .popup-size__adding", ".header .popup-size__forms");
         }));
         setupQuantityHandlers(document.querySelector(".calc__inputs-row"));
-        setupQuantityHandlers(document.querySelector(".popup-size__forms"));
+        setupQuantityHandlers(document.querySelector(".popup_onsize .popup-size__forms"));
+        setupQuantityHandlers(document.querySelector(".header .popup-size__forms"));
         const modalBtns = document.querySelectorAll(".tabs__item-btn");
         const modalTabs = document.querySelectorAll(".modal-options .tabs__item");
         const modalTabsBtn = document.querySelectorAll(".modal-options .tabs__button");
@@ -12705,10 +12712,17 @@
             if (downloadCountDisplay) downloadCountDisplay.textContent = uploadedImages.length;
         }
         const productMenu = document.querySelector(".product-menu");
+        const headerFix = document.querySelector(".header-fix");
         const sections = document.querySelectorAll("section");
         function handleScroll() {
             const secondSectionBottom = sections[1].getBoundingClientRect().bottom;
-            if (secondSectionBottom < window.innerHeight) productMenu.classList.add("_active"); else productMenu.classList.remove("_active");
+            if (secondSectionBottom < window.innerHeight) {
+                headerFix.classList.add("_active");
+                productMenu.classList.add("_active");
+            } else {
+                headerFix.classList.remove("_active");
+                productMenu.classList.remove("_active");
+            }
         }
         window.addEventListener("scroll", handleScroll);
         window.addEventListener("load", (function() {

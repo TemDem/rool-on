@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="format-detection" content="telephone=no">
 	<!-- <style>body{opacity: 0;}</style> -->
-	<link rel="stylesheet" href="css/style.min.css?_v=20241005132648">
+	<link rel="stylesheet" href="css/style.min.css?_v=20241005160239">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- <meta name="robots" content="noindex, nofollow"> -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,115 @@
 			<div class="loader"></div>
 		</div>
 		<header class="header">
-			<div class="header__container">
+			<div class="header-fix">
+				<div class="header-fix__body">
+					<div class="header-fix__row">
+						<div class="header-fix__left">
+							<div class="header-fix__image">
+								<picture><source srcset="img/product-card/prev.webp" type="image/webp"><img src="img/product-card/prev.jpg" alt="preview"></picture>
+							</div>
+							<div class="header-fix__content">
+								<div class="header-fix__content-top">
+									<div class="header-fix__name">Респект ФР Светло-серый Блэкаут</div>
+									<div class="header-fix__size">
+										<div class="header-fix__size-text">
+											<span>300мм × 300мм</span>
+											<span class="tool-question">
+												<img src="img/icons/tool-tip.svg" alt="tooltip">
+											</span>
+										</div>
+
+										<div class="header-fix__sub-menu">
+											<div class="popup-size">
+												<div class="popup-size__top">
+													<div class="popup-size__title">Введите размеры</div>
+												</div>
+												<div class="popup-size__forms">
+													<div class="popup-size__input-block">
+														<div class="popup-size__subtext">Ширина</div>
+														<input placeholder="300 - 3050 мм" type="text">
+
+													</div>
+													<div class="popup-size__input-block">
+														<div class="popup-size__subtext">Длина</div>
+														<input placeholder="300 - 3050 мм" type="text">
+													</div>
+													<div class="popup-size__input-block popup-size__input-block_count">
+														<div class="popup-size__subtext">Количество</div>
+														<div class="popup-size__inps">
+															<button type="button" class="minus">-</button>
+															<input type="number" class="count-inp" value="1">
+															<button type="button" class="plus">+</button>
+														</div>
+													</div>
+												</div>
+												<a href="" class="popup-size__adding">Добавить размер +</a>
+												<div class="popup-size__button-wrap">
+													<button class="popup-size__button button1 button-black">
+														Ввести размер
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="header-fix__content-bottom">
+									<div class="header-fix__raiting">
+										<img src="img/icons/star.svg" alt="star">
+										<span>4.9</span>
+
+									</div>
+									<ul class="header-fix__menu">
+										<li class="header-fix__menu-item">
+											<a href="#rev" class="link sroll-to">12 отзывов</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#harak" class="link sroll-to">Характеристики</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#zamer" class="link sroll-to">Замер</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#ustanovka" class="link sroll-to">Установка</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#obraz" class="link sroll-to">Бесплатные образцы</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#obraz" class="link sroll-to">Бесплатные образцы</a>
+										</li>
+										<li class="header-fix__menu-item">
+											<a href="#dostavka" class="link sroll-to">Доставка и оплата</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="header-fix__right">
+							<div class="header-fix__right-row">
+								<div class="header-fix__price-block">
+									<div class="header-fix__price">
+										11 243 ₽
+									</div>
+									<div class="header-fix__sale">
+										12 000 ₽
+									</div>
+								</div>
+								<div class="header-fix__sale-percent sale-percent">
+									-44%
+								</div>
+								<div class="header-fix__btns">
+									<div class="header-fix__btn button1 button-black">
+										Добавить в корзину
+									</div>
+									<div class="header-fix__fav">
+										<img src="img/icons/favorites.svg" alt="like">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</header>
 		<div class="container">
@@ -73,7 +181,7 @@
 										<img src="img/icons/grade.svg" alt="">
 										4.9
 									</span>
-									<a href="#" class="link">12 отзывов</a>
+									<a href="#rev" class="link scroll-to">12 отзывов</a>
 								</div>
 								<a href="#" data-popup="#free" class="link">Бесплатный образец ткани</a>
 							</div>
@@ -118,12 +226,12 @@
 									<span class="sale-percent">-44%</span>
 									<span class="old-price">12 000 ₽</span>
 								</div>
-								<div data-popup="#size" class="insurance">
+								<div class="insurance">
 									<input checked id="insurance__input" type="checkbox">
 									<label for="insurance__input">Страховка от ошибки при замере — <strong>0
 											₽</strong></label>
 									<span>499 ₽
-										<div class="tool-question tool-question_bottom">
+										<div data-popup="#size" class="tool-question tool-question_bottom">
 											<img src="img/icons/tool-tip.svg" alt="icon">
 										</div>
 									</span>
@@ -759,7 +867,7 @@
 
 
 								<div class="zamer__btn ustanovka__zamer">
-									<button class="button1 button-black">Нужен профессиональный замер</button>
+									<button data-popup="#size" class="button1 button-black">Нужен профессиональный замер</button>
 									<p class="body3"><strong>От 199 ₽</strong>, замерщик приедет
 										<strong>завтра</strong>
 									</p>
@@ -936,7 +1044,7 @@
 								поездки по магазинам — все, что вам нужно, это заказать бесплатные образцы
 								у нас!</p>
 							<div class="obraz__banner-btn">
-								<button class="button1 button-black">Заказать бесплатный образец</button>
+								<button data-popup="#free" class="button1 button-black">Заказать бесплатный образец</button>
 							</div>
 						</div>
 					</div>
@@ -2246,7 +2354,7 @@
 			Навигационное меню
 		</div>
 	</div>
-	<script src="js/app.min.js?_v=20241005132648"></script>
+	<script src="js/app.min.js?_v=20241005160239"></script>
 </body>
 
 </html>
