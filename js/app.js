@@ -12590,6 +12590,7 @@
             }));
             const addBlock = document.querySelector(containerSelector);
             if (addBlock) addBlock.parentNode.insertBefore(newBlock, addBlock);
+            document.querySelector(containerSelector).remove();
             setupQuantityHandlers(newBlock);
         }
         function setupQuantityHandlers(container) {
@@ -12601,7 +12602,6 @@
                     const currentValue = parseInt(input.value);
                     input.value = isNaN(currentValue) ? 1 : currentValue + 1;
                 }));
-                console.log(1234);
                 btnMinus.addEventListener("click", (() => {
                     const currentValue = parseInt(input.value);
                     if (!isNaN(currentValue) && currentValue > 1) input.value = currentValue - 1;
@@ -12614,6 +12614,7 @@
         }));
         if (popupAddMob) popupAddMob.addEventListener("click", (function(e) {
             e.preventDefault();
+            e.stopPropagation();
             document.querySelector(".popup_onsize").classList.add("onsize-on");
             addNewBlock(".popup_onsize .popup-size__add", ".popup_onsize .popup-size__forms");
         }));
