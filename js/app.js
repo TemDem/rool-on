@@ -12505,9 +12505,13 @@
         function changeMainImage(index) {
             thumbnails.forEach(((thumb, i) => {
                 if (i === index) {
+                    thumb.closest("div").classList.add("active");
                     thumb.classList.add("active");
                     mainImage.src = thumb.getAttribute("data-large");
-                } else thumb.classList.remove("active");
+                } else {
+                    thumb.closest("div").classList.remove("active");
+                    thumb.classList.remove("active");
+                }
             }));
             currentImageIndex = index;
             scrollToThumbnail(index);
